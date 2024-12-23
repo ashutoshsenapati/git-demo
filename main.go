@@ -19,7 +19,7 @@ const (
 )
 
 type Book struct {
-	ID        int
+	ID        string
 	Title     string
 	Author    string
 	Published time.Time
