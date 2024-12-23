@@ -10,7 +10,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Database connection parameters
 const (
 	host     = "localhost"
 	port     = 5432
@@ -19,7 +18,6 @@ const (
 	dbname   = "testdb"
 )
 
-// Book represents a row in our books table
 type Book struct {
 	ID        int
 	Title     string
@@ -27,25 +25,20 @@ type Book struct {
 	Published time.Time
 }
 
-// initDB establishes the database connection and creates the books table
 func initDB() (*sql.DB, error) {
-	// Construct the connection string
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	// Open a connection to the database
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("error opening database: %v", err)
 	}
 
-	// Verify the connection is working
 	err = db.Ping()
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to database: %v", err)
 	}
 
-	// Create the books table if it doesn't exist
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS books (
             id SERIAL PRIMARY KEY,
@@ -61,7 +54,6 @@ func initDB() (*sql.DB, error) {
 	return db, nil
 }
 
-// insertBook adds a new book to the database
 func insertBook(db *sql.DB, book Book) error {
 	query := `
         INSERT INTO books (title, author, published)
@@ -71,7 +63,6 @@ func insertBook(db *sql.DB, book Book) error {
 	return db.QueryRow(query, book.Title, book.Author, book.Published).Scan(&book.ID)
 }
 
-// getBookByID retrieves a book from the database by its ID
 func getBookByID(db *sql.DB, id int) (Book, error) {
 	var book Book
 	query := `
@@ -87,7 +78,6 @@ func getBookByID(db *sql.DB, id int) (Book, error) {
 	return book, nil
 }
 
-// getAllBooks retrieves all books from the database
 func getAllBooks(db *sql.DB) ([]Book, error) {
 	query := `
         SELECT id, title, author, published
@@ -113,14 +103,12 @@ func getAllBooks(db *sql.DB) ([]Book, error) {
 }
 
 func main() {
-	// Initialize the database connection
 	db, err := initDB()
 	if err != nil {
 		log.Fatal("Failed to initialize database:", err)
 	}
 	defer db.Close()
 
-	// Insert a sample book
 	newBook := Book{
 		Title:     "The Go Programming Language",
 		Author:    "Alan A. A. Donovan and Brian W. Kernighan",
@@ -133,7 +121,6 @@ func main() {
 	}
 	fmt.Println("Successfully inserted new book")
 
-	// Retrieve and display all books
 	books, err := getAllBooks(db)
 	if err != nil {
 		log.Fatal("Failed to get books:", err)
