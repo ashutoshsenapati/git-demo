@@ -39,7 +39,6 @@ func initDB() (*sql.DB, error) {
 		return nil, fmt.Errorf("error connecting to database: %v", err)
 	}
 
-
 	// Create the books table even if the hooks do not exist
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS books (
