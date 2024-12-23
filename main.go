@@ -19,7 +19,7 @@ const (
 )
 
 type Book struct {
-	ID        int
+	Id        string
 	Title     string
 	Author    string
 	Published time.Time
@@ -38,7 +38,6 @@ func initDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to database: %v", err)
 	}
-
 
 	// Create the books table even if the hooks do not exist
 	_, err = db.Exec(`
